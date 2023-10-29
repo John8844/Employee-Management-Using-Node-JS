@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Employee = require("../Models/employee");
+const { addEmployeeValidation } = require("../Validation/employeeValidation")
 
 
-router.post('/', async(req,res) => {
+router.post('/', addEmployeeValidation, async(req,res) => {
     const employee = new Employee({
         name: req.body.name,
         email: req.body.email,
@@ -12,8 +13,17 @@ router.post('/', async(req,res) => {
     });
 
     try{
-        const newEmployee = await employee.save();
-        res.json(newEmployee);
+        const oldEmployee = await Employee.findOne({email: req.body.email});
+        if(employee.role == "Java Developer" || employee.role == "Js Developer"){
+            if(!oldEmployee){
+                const newEmployee = await employee.save();
+                res.json(newEmployee);
+            }else{
+                res.send("Employee already Exist!")
+            }
+        }else{
+            res.send("Only Java Developer and Js Developer role is Acceptable...")
+        }
     }catch(err){
         res.send("Error : " + err);
     }

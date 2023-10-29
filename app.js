@@ -16,6 +16,8 @@ app.use(express.json());
 
 const employeeRouter = require('./Routes/employeeRoute');
 app.use('/employee', employeeRouter);
+const userRouter = require('./Routes/userRoute');
+app.use('/api', userRouter)
 
 app.listen(9000, () => {
     console.log('http://localhost:9000');
